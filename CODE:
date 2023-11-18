@@ -1,0 +1,47 @@
+# Import necessary libraries
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import classification_report, accuracy_score
+
+# Load your historical student data
+# Replace 'your_data.csv' with the actual file path
+data = pd.read_csv('your_data.csv')
+
+# Data preprocessing
+# Assume 'enrolled' is the target variable for enrollment prediction
+X_enrollment = data.drop(['enrolled'], axis=1)
+y_enrollment = data['enrolled']
+
+# Assume 'graduated' is the target variable for graduation success prediction
+X_graduation = data.drop(['graduated'], axis=1)
+y_graduation = data['graduated']
+
+# Split the data into training and testing sets for both tasks
+X_train_enrollment, X_test_enrollment, y_train_enrollment, y_test_enrollment = train_test_split(
+    X_enrollment, y_enrollment, test_size=0.2, random_state=42
+)
+
+X_train_graduation, X_test_graduation, y_train_graduation, y_test_graduation = train_test_split(
+    X_graduation, y_graduation, test_size=0.2, random_state=42
+)
+
+# Model training
+# For simplicity, we're using RandomForestClassifier; you can explore other algorithms
+enrollment_model = RandomForestClassifier(n_estimators=100, random_state=42)
+graduation_model = RandomForestClassifier(n_estimators=100, random_state=42)
+
+enrollment_model.fit(X_train_enrollment, y_train_enrollment)
+graduation_model.fit(X_train_graduation, y_train_graduation)
+
+# Model evaluation
+enrollment_predictions = enrollment_model.predict(X_test_enrollment)
+graduation_predictions = graduation_model.predict(X_test_graduation)
+
+print("Enrollment Model Evaluation:")
+print(classification_report(y_test_enrollment, enrollment_predictions))
+print("Accuracy:", accuracy_score(y_test_enrollment, enrollment_predictions))
+
+print("\nGraduation Model Evaluation:")
+print(classification_report(y_test_graduation, graduation_predictions))
+print("Accuracy:", accuracy_score(y_test_graduation, graduation_predictions))
